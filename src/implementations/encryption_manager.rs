@@ -6,7 +6,7 @@ use ring::{
 use crate::EncryptionManager;
 
 impl EncryptionManager {
-    fn new() -> Self {
+    pub fn new() -> Self {
         const KEY_LEN: usize = 32;
         let rng = rand::SystemRandom::new();
         let mut key_bytes = [0u8; KEY_LEN];
@@ -25,7 +25,7 @@ impl EncryptionManager {
         }
     }
 
-    fn encrypt(&mut self, data: &[u8]) -> Vec<u8> {
+    pub fn encrypt(&mut self, data: &[u8]) -> Vec<u8> {
         let nonce = aead::Nonce::assume_unique_for_key([
             0u8,
             0,
@@ -50,7 +50,7 @@ impl EncryptionManager {
         in_out
     }
 
-    fn decrypt(&self, encrypted: &mut [u8]) -> Result<Vec<u8>, ()> {
+    pub fn decrypt(&self, encrypted: &mut [u8]) -> Result<Vec<u8>, ()> {
         let tag_pos = encrypted.len() - aead::CHACHA20_POLY1305.tag_len();
         let nonce = aead::Nonce::assume_unique_for_key([0u8; 12]);
 

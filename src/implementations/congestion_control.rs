@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use crate::CongestionControl;
 
 impl CongestionControl {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             window_size: 1,
             threshold: 16,
@@ -13,7 +13,7 @@ impl CongestionControl {
         }
     }
 
-    fn on_ack(&mut self) {
+    pub fn on_ack(&mut self) {
         if self.window_size < self.threshold {
             self.window_size += 1;
         } else {
@@ -21,13 +21,13 @@ impl CongestionControl {
         }
     }
 
-    fn on_loss(&mut self) {
+    pub fn on_loss(&mut self) {
         self.threshold = self.window_size / 2;
         self.window_size = 1;
         self.last_window_decrease = Instant::now();
     }
 
-    fn update_rrt(&mut self, measured_rtt: Duration) {
+    pub fn update_rrt(&mut self, measured_rtt: Duration) {
         const ALPHA: f32 = 0.125;
         const BETA: f32 = 0.25;
 
