@@ -32,4 +32,5 @@ pub enum GameMessage {
     },
     PlayerJoin(u32),
     PlayerLeave(u32),
+    PlayerIdAssigned(u32),
 }

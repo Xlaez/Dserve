@@ -12,7 +12,7 @@ use dserve::{
 struct GameServer {
     protocol: NetworkProtocol,
     state: GameState,
-    clients: HashMap<String, u32>,
+    clients: HashMap<u32, u32>,
     next_player_id: u32,
 }
 
@@ -62,7 +62,13 @@ impl GameServer {
                         last_update: self.state.game_time,
                     };
 
-                    self.state.players.insert(player_id, new_player);
+                    self.state.players.insert(player_id.clone(), new_player);
+                    self.clients.insert(player_id.clone(), client_addr.clone());
+
+                    let id_message = GameMessage::PlayerIdAssigned(player_id.clone());
+                    let serialized =
+                        bincode::serialize(&id_message).expect("Failed to serialize player ID");
+                    self.protocol.send_reliable(serialized)?;
                 }
                 GameMessage::PlayerLeave(player_id) => {
                     self.state.players.remove(&player_id);
@@ -77,6 +83,7 @@ impl GameServer {
         // Broadcast state to all clients
         let state_update = GameMessage::StateUpdate(self.state.clone());
         let serialized = bincode::serialize(&state_update).expect("Failed to serialize game state");
+
         self.protocol.send_reliable(serialized)?;
 
         Ok(())
@@ -104,12 +111,17 @@ fn main() -> std::io::Result<()> {
 
     client.connect("127.0.0.1:8000")?;
 
+    println!("Client connected to server");
+
+    // let mut buffer = [0u8; 1024];
+
     loop {
         server.update()?;
         client.update()?;
 
-        client.send_input(Vector2 { x: 1.0, y: 0.0 })?;
-
+        if client.player_id.is_some() {
+            client.send_input(Vector2 { x: 1.0, y: 0.0 })?;
+        }
         // Using 60fps update rate
         std::thread::sleep(Duration::from_millis(16));
     }
