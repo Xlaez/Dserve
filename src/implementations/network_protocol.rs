@@ -11,8 +11,8 @@ use flate2::{
 };
 
 use crate::{
-    enums::ProtocolState, CongestionControl, EncryptionManager, NetworkProtocol, Packet,
-    PacketBuffer,
+    definitions::{CongestionControl, EncryptionManager, NetworkProtocol, Packet, PacketBuffer},
+    enums::ProtocolState,
 };
 
 impl NetworkProtocol {

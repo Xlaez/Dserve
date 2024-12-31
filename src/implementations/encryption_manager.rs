@@ -3,7 +3,7 @@ use ring::{
     rand::{self, SecureRandom},
 };
 
-use crate::EncryptionManager;
+use crate::definitions::EncryptionManager;
 
 impl EncryptionManager {
     pub fn new() -> Self {
@@ -51,6 +51,11 @@ impl EncryptionManager {
     }
 
     pub fn decrypt(&self, encrypted: &mut [u8]) -> Result<Vec<u8>, ()> {
+        // Check if the length of the encrypted data is valid
+        if encrypted.len() < aead::CHACHA20_POLY1305.tag_len() {
+            return Err(()); // Return an error if the buffer is too small
+        }
+
         let tag_pos = encrypted.len() - aead::CHACHA20_POLY1305.tag_len();
         let nonce = aead::Nonce::assume_unique_for_key([0u8; 12]);
 

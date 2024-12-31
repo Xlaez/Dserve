@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{Packet, PacketBuffer};
+use crate::definitions::{Packet, PacketBuffer};
 
 impl PacketBuffer {
     pub fn new(max_size: usize) -> Self {

@@ -6,3 +6,15 @@ edition = "2021"
 [dependencies]
 flate2 = "1.0.35"
 ring = "0.17.8"
+
+[lib]
+name = "dserve"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/main.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"

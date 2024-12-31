@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use crate::CongestionControl;
+use crate::definitions::CongestionControl;
 
 impl CongestionControl {
     pub fn new() -> Self {
